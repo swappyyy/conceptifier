@@ -51,7 +51,7 @@ def home():
 
 @app.get("/test")
 def test_explanation():
-    example_concept = "Gravity"
+    example_concept = input("Please enter a concept you would like to understand: ")
     example_complexity = "simple"
     explanation = generate_explanation(example_concept, example_complexity)
     return {"concept": example_concept, "explanation": explanation}
