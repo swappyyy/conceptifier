@@ -25,7 +25,8 @@ def generate_explanation(concept, complexity):
         "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
         "Content-Type": "application/json"
     }
-    data = {"inputs": f"Explain: {concept}. Complexity: {complexity}."}
+    # ✅ Update prompt to avoid repeats
+    data = {"inputs": f"Explain {concept} at a {complexity} level in a straightforward and direct way."}
 
     response = requests.post(
         f"https://api-inference.huggingface.co/models/{MODEL_NAME}",
@@ -34,23 +35,29 @@ def generate_explanation(concept, complexity):
     )
 
     result = response.json()
-    
-    # Extract text
+
     if isinstance(result, list) and "generated_text" in result[0]:
-        return result[0]["generated_text"]
+        explanation = result[0]["generated_text"].strip()
+
+        # 🔥 **Remove the first line if it contains unwanted intro**
+        explanation_lines = explanation.split("\n")
+        if any(phrase in explanation_lines[0].lower() for phrase in ["provide a simple", "explain", "complexity"]):
+            explanation_lines.pop(0)  # Remove the first line
+
+        cleaned_explanation = "\n".join(explanation_lines).strip()
+
+        return cleaned_explanation
     else:
         return f"Error: Unable to generate response. API Response: {result}"
 
-@app.post("/explain")
-def explain_concept(request: ConceptRequest):
-    explanation = generate_explanation(request.concept, request.complexity)
-    return {"concept": request.concept, "explanation": explanation}
-
-@app.get("/")
-def home():
-    return {"message": "Welcome to the AI Concept Explainer. Use /explain with a POST request."}
-
 @app.get("/test", response_class=PlainTextResponse)
-def test_explanation(concept: str = "Gravity", complexity: str = "simple"):
+def test_explanation(concept: str = "gravity", complexity: str = "simple"):
     explanation = generate_explanation(concept, complexity)
-    print(concept, "\n\n", explanation)  # Now it will only return the text, no JSON
+
+    # Debugging: Print explanation and return an error message if empty
+    print(f"Generated Explanation: {explanation}")
+
+    if not explanation.strip():  # If the response is empty, return an error
+        return "Error: No explanation generated. Try a different query."
+
+    return explanation  # Return plain text
