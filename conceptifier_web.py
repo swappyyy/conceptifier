@@ -50,9 +50,7 @@ def home():
     return {"message": "Welcome to the AI Concept Explainer. Use /explain with a POST request."}
 
 @app.get("/test")
-def test_explanation():
-    example_concept = input("Please enter a concept you would like to understand: ")
-    example_complexity = "simple"
-    explanation = generate_explanation(example_concept, example_complexity)
-    return {"concept": example_concept, "explanation": explanation}
+def test_explanation(concept: str = "Gravity", complexity: str = "simple"):
+    explanation = generate_explanation(concept, complexity)
+    return {"concept": concept, "\n\nexplanation": explanation}
 
