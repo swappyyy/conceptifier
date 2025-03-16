@@ -1,11 +1,13 @@
-# hugging face access key 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
-
 from fastapi import FastAPI
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import requests
+import os
+
 
 # Set your Hugging Face API Key
-HUGGINGFACE_API_KEY = "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"  # Replace with your real API key
+load_dotenv()
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")  # Replace with your real API key
 
 # Use a lightweight model
 MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"

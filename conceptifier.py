@@ -1,12 +1,12 @@
-# open ai api key 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
-# hugging face access key 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
-
+from dotenv import load_dotenv
 import requests
+import os
 
 # Set your Hugging Face API Key
-HUGGINGFACE_API_KEY = "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"  # Replace with your real API key
+load_dotenv()
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")  # Replace with your real API key
 
-# Choose a model (e.g., "deepseek-ai/DeepSeek-R1")
+# Choose a model (e.g., "mistralai/Mistral-7B-Instruct-v0.3")
 MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
 
 def generate_explanation(concept, complexity):
