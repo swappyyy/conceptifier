@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from fastapi.responses import PlainTextResponse
 import requests
 import os
 
@@ -24,7 +25,7 @@ def generate_explanation(concept, complexity):
         "Authorization": f"Bearer {HUGGINGFACE_API_KEY}",
         "Content-Type": "application/json"
     }
-    data = {"inputs": f"Explain {concept} in a {complexity} way."}
+    data = {"inputs": f"Explain: {concept}. Complexity: {complexity}."}
 
     response = requests.post(
         f"https://api-inference.huggingface.co/models/{MODEL_NAME}",
@@ -49,8 +50,7 @@ def explain_concept(request: ConceptRequest):
 def home():
     return {"message": "Welcome to the AI Concept Explainer. Use /explain with a POST request."}
 
-@app.get("/test")
+@app.get("/test", response_class=PlainTextResponse)
 def test_explanation(concept: str = "Gravity", complexity: str = "simple"):
     explanation = generate_explanation(concept, complexity)
-    return {"concept": concept, "\n\nexplanation": explanation}
-
+    print(concept, "\n\n", explanation)  # Now it will only return the text, no JSON
