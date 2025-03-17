@@ -26,7 +26,7 @@ def generate_explanation(concept, complexity):
         "Content-Type": "application/json"
     }
     # ✅ Update prompt to avoid repeats
-    data = {"inputs": f"Explain {concept} at a {complexity} level in a straightforward and direct way."}
+    data = {"inputs": f"Please explain {concept} to me. Explain it at a {complexity} level in a straightforward and direct way."}
 
     response = requests.post(
         f"https://api-inference.huggingface.co/models/{MODEL_NAME}",
